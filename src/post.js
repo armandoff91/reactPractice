@@ -14,6 +14,12 @@ const sampleComment = {
     replies: [sampleReply, sampleReply, sampleReply]
 }
 
+const sampleComment2 = {
+    authorId: 1002,
+    authorName: "John",
+    body: "sample comment 2",
+    replies: [sampleReply, sampleReply, sampleReply]
+}
 
 
 const samplePost = {
@@ -24,36 +30,53 @@ const samplePost = {
     comments: [sampleComment, sampleComment, sampleComment, sampleComment]
 }
 
+const updatedPost = {
+    authorId: 1001,
+    authorName: "Albert2",
+    title: "test title2",
+    body: "test body2",
+    comments: [sampleComment2, sampleComment2, sampleComment2, sampleComment2]
+}
 
 class Post extends React.Component {
     constructor(props) {
         super(props)
-        this.post = samplePost
-        this.commentList = this.post.comments.map((comment) => 
+        this.state = {post: samplePost}
+        this.refresh = this.refresh.bind(this) // if not binded the scope of refresh will be window
+    }
+
+    commentList(post) {return post.comments.map((comment) => 
             
             <div key={comment.toString()}>
                 {comment.body}
                 {this.replyList(comment)}
             </div>
-        )
 
-    }
+    )}
 
     replyList (comment) {
         return comment.replies.map((reply) => <li key={reply.toString}>{reply.body}</li>)
-    } 
+    }
+
+    refresh() {
+        console.log(this)
+        this.setState({
+            post: updatedPost
+        })
+    }
     
     render () {
         return <div>
-            <h1>{this.post.title}</h1>
-            <h2>{this.post.authorName}</h2>
-            <h2>{this.post.body}</h2>
+            <h1>{this.state.post.title}</h1>
+            <h2>{this.state.post.authorName}</h2>
+            <h2>{this.state.post.body}</h2>
             <div>
-                {this.commentList}
+                {this.commentList(this.state.post)}
             </div>
+            <button onClick={this.refresh}>refresh</button>
         </div>
 
     }
 }
 
-ReactDOM.render(<Post />, document.querySelector("#post"))
+ReactDOM.render(<Post/>, document.querySelector("#post"))
