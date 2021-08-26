@@ -16,8 +16,12 @@ var Calculator = function (_React$Component) {
 
         _this.onInputC = _this.onInputC.bind(_this);
         _this.onInputF = _this.onInputF.bind(_this);
+        _this.onChangeC = _this.onChangeC.bind(_this);
+        _this.onChangeF = _this.onChangeF.bind(_this);
         _this.handleSubmit = _this.handleSubmit.bind(_this);
+        _this.verdict = _this.verdict.bind(_this);
         _this.state = {
+            scale: "c",
             temperature: 0
         };
         return _this;
@@ -26,27 +30,47 @@ var Calculator = function (_React$Component) {
     _createClass(Calculator, [{
         key: "onInputC",
         value: function onInputC(event) {
-            console.log("C onInput");
-            this.setState = {
+            console.log("onInputC triggered");
+            this.setState({
+                scale: "c",
                 temperature: event.target.value
-            };
-            console.log(this.state.temperature);
+            });
         }
     }, {
         key: "onInputF",
         value: function onInputF(event) {
-            console.log("F oninput");
-            this.setState = {
-                temperature: (event.target.value - 32) * 5 / 9
-            };
-            console.log(this.state.temperature);
+            var _this2 = this;
+
+            console.log(event.target.value);
+            this.setState({
+                scale: "f",
+                temperature: event.target.value
+            }, function () {
+                console.log(_this2.state.temperature);
+                console.log(_this2.state.scale);
+            });
         }
     }, {
         key: "handleSubmit",
         value: function handleSubmit(event) {
             event.preventDefault();
-            console.log(event.target.querySelector("input#c").value);
+            console.log(this.state.temperature);
             console.log("form submit");
+        }
+    }, {
+        key: "onChangeC",
+        value: function onChangeC() {
+            return this.state.scale === "f" ? (this.state.temperature - 32) * 5 / 9 : this.state.temperature;
+        }
+    }, {
+        key: "onChangeF",
+        value: function onChangeF() {
+            return this.state.scale === "c" ? this.state.temperature * 9 / 5 + 32 : this.state.temperature;
+        }
+    }, {
+        key: "verdict",
+        value: function verdict() {
+            return this.state.scale === "c" ? this.state.temperature >= 100 ? "Water will boil" : "Water will not boil" : this.state.temperature >= 212 ? "Water will boil" : "Water will not boil";
         }
     }, {
         key: "render",
@@ -58,23 +82,18 @@ var Calculator = function (_React$Component) {
                     "fieldset",
                     null,
                     React.createElement(
-                        "p",
-                        null,
-                        this.state.temperature
-                    ),
-                    React.createElement(
                         "legend",
                         null,
                         "Themometer"
                     ),
-                    React.createElement(InputC, { onInput: this.onInputC, temperature: this.state.temperature }),
-                    React.createElement(InputF, { onInput: this.onInputF, temperature: this.state.temperature * 9 / 5 + 32 }),
+                    React.createElement(InputC, { onInput: this.onInputC, sync: this.onChangeC }),
+                    React.createElement(InputF, { onInput: this.onInputF, sync: this.onChangeF }),
                     React.createElement(
                         "button",
                         { type: "submit", value: "Submit" },
                         "Submit"
                     ),
-                    React.createElement(Verdict, { temperature: this.state.temperature })
+                    React.createElement(Verdict, { verdict: this.verdict })
                 )
             );
         }
@@ -89,16 +108,13 @@ var InputC = function (_React$Component2) {
     function InputC(props) {
         _classCallCheck(this, InputC);
 
-        var _this2 = _possibleConstructorReturn(this, (InputC.__proto__ || Object.getPrototypeOf(InputC)).call(this, props));
-
-        _this2.state = { scale: "c", temperature: 0 };
-        return _this2;
+        return _possibleConstructorReturn(this, (InputC.__proto__ || Object.getPrototypeOf(InputC)).call(this, props));
     }
 
     _createClass(InputC, [{
         key: "render",
         value: function render() {
-            return React.createElement("input", { id: "c", onInput: this.props.onInput });
+            return React.createElement("input", { id: "c", onInput: this.props.onInput, value: this.props.sync() });
         }
     }]);
 
@@ -111,16 +127,13 @@ var InputF = function (_React$Component3) {
     function InputF(props) {
         _classCallCheck(this, InputF);
 
-        var _this3 = _possibleConstructorReturn(this, (InputF.__proto__ || Object.getPrototypeOf(InputF)).call(this, props));
-
-        _this3.state = { scale: "f", temperature: 0 };
-        return _this3;
+        return _possibleConstructorReturn(this, (InputF.__proto__ || Object.getPrototypeOf(InputF)).call(this, props));
     }
 
     _createClass(InputF, [{
         key: "render",
         value: function render() {
-            return React.createElement("input", { id: "f", onInput: this.props.onInput });
+            return React.createElement("input", { id: "f", onInput: this.props.onInput, value: this.props.sync() });
         }
     }]);
 
@@ -133,21 +146,17 @@ var Verdict = function (_React$Component4) {
     function Verdict(props) {
         _classCallCheck(this, Verdict);
 
-        var _this4 = _possibleConstructorReturn(this, (Verdict.__proto__ || Object.getPrototypeOf(Verdict)).call(this, props));
-
-        _this4.state = {
-            temperature: _this4.props.temperature
-        };
-        return _this4;
+        return _possibleConstructorReturn(this, (Verdict.__proto__ || Object.getPrototypeOf(Verdict)).call(this, props));
     }
 
     _createClass(Verdict, [{
         key: "render",
         value: function render() {
+            var verdict = this.props.verdict();
             return React.createElement(
                 "div",
-                null,
-                this.state.temperature > 100 ? "water will boil" : "water will not boil"
+                { id: "v" },
+                verdict
             );
         }
     }]);

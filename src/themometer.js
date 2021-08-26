@@ -1,22 +1,28 @@
 class Calculator extends React.Component{
     constructor(props) {
         super(props)
-        this.handleChangeC = this.handleChangeC.bind(this)
-        this.handleChangeF = this.handleChangeF.bind(this)
+        this.onInputC = this.onInputC.bind(this)
+        this.onInputF = this.onInputF.bind(this)
         this.handleSubmit = this.handleSubmit.bind(this)
         this.state = {
             temperature: 0
         }
     }
 
-    handleChangeC(event) {
+    onInputC(event) {
+        console.log("C onInput")
         this.setState = {
             temperature : event.target.value
         }
+        console.log(this.state.temperature)
     }
 
-    handleChangeF(event) {
-        console.log("change f" + event.target.value)
+    onInputF(event) {
+        console.log("F oninput")
+        this.setState = {
+            temperature : (event.target.value-32)*5/9
+        }
+        console.log(this.state.temperature)
     }
 
     handleSubmit(event) {
@@ -27,9 +33,10 @@ class Calculator extends React.Component{
 
     render() {
         return <form onSubmit={this.handleSubmit}><fieldset>
+            <p>{this.state.temperature}</p>
             <legend>Themometer</legend>
-            <InputC handleChangeC = {this.handleChangeC}/>
-            <InputF handleChangeF = {this.handleChangeF}/>
+            <InputC onInput={this.onInputC} temperature={this.state.temperature}/>
+            <InputF onInput={this.onInputF} temperature={this.state.temperature*9/5+32}/>
             <button type="submit" value="Submit">Submit</button>
             <Verdict temperature={this.state.temperature}/>
         </fieldset></form>
@@ -43,7 +50,7 @@ class InputC extends React.Component{
     }
 
     render() {
-        return <input id="c" value={this.state.temperature} onChange={this.props.handleChangeC}></input>
+        return <input id="c" onInput={this.props.onInput}></input>
     }
 }
 
@@ -54,7 +61,7 @@ class InputF extends React.Component{
     }
 
     render() {
-        return <input id="f" value={this.state.temperature} onChange={this.props.handleChangeF}></input>
+        return <input id="f" onInput={this.props.onInput}></input>
     }
 }
 
